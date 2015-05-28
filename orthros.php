@@ -30,11 +30,6 @@
 	    clearstatcache();
 	}
 
-	function fnDecrypt($sValue, $sSecretKey) {
-		global $iv;
-	    return rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $sSecretKey, base64_decode($sValue), MCRYPT_MODE_CBC, $iv), "\0\3");
-	}
-
 	function rand_key($length = 20) {
 		$pool = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		$crypto_rand_secure = function ( $min, $max ) {
