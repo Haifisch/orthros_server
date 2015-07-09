@@ -10,6 +10,6 @@
 	if ($_GET['action'] || $_GET['UUID']) {
 		require('orthros.php');
 	} else {
-		header('Location: https://development.orthros.ninja/apidocs.html');
+		header('Location: apidocs.html');
 	}
 ?>
