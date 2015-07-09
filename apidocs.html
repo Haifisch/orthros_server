@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <meta charset="utf-8" />
+      <title>api</title>
+      <style>.markdown-preview, .markdown-preview[data-use-github-style] { font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 1.6; word-wrap: break-word; overflow: scroll; box-sizing: border-box; padding: 20px; background-color: rgb(255, 255, 255); }
+.markdown-preview > :first-child, .markdown-preview[data-use-github-style] > :first-child { margin-top: 0px !important; }
+.markdown-preview > :last-child, .markdown-preview[data-use-github-style] > :last-child { margin-bottom: 0px !important; }
+.markdown-preview a:not([href]), .markdown-preview[data-use-github-style] a:not([href]) { color: inherit; text-decoration: none; }
+.markdown-preview .absent, .markdown-preview[data-use-github-style] .absent { color: rgb(204, 0, 0); }
+.markdown-preview .anchor, .markdown-preview[data-use-github-style] .anchor { position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; }
+.markdown-preview .anchor:focus, .markdown-preview[data-use-github-style] .anchor:focus { outline: none; }
+.markdown-preview h1, .markdown-preview[data-use-github-style] h1, .markdown-preview h2, .markdown-preview[data-use-github-style] h2, .markdown-preview h3, .markdown-preview[data-use-github-style] h3, .markdown-preview h4, .markdown-preview[data-use-github-style] h4, .markdown-preview h5, .markdown-preview[data-use-github-style] h5, .markdown-preview h6, .markdown-preview[data-use-github-style] h6 { position: relative; margin-top: 1em; margin-bottom: 16px; font-weight: bold; line-height: 1.4; }
+.markdown-preview h1 .octicon-link, .markdown-preview[data-use-github-style] h1 .octicon-link, .markdown-preview h2 .octicon-link, .markdown-preview[data-use-github-style] h2 .octicon-link, .markdown-preview h3 .octicon-link, .markdown-preview[data-use-github-style] h3 .octicon-link, .markdown-preview h4 .octicon-link, .markdown-preview[data-use-github-style] h4 .octicon-link, .markdown-preview h5 .octicon-link, .markdown-preview[data-use-github-style] h5 .octicon-link, .markdown-preview h6 .octicon-link, .markdown-preview[data-use-github-style] h6 .octicon-link { display: none; color: rgb(0, 0, 0); vertical-align: middle; }
+.markdown-preview h1:hover .anchor, .markdown-preview[data-use-github-style] h1:hover .anchor, .markdown-preview h2:hover .anchor, .markdown-preview[data-use-github-style] h2:hover .anchor, .markdown-preview h3:hover .anchor, .markdown-preview[data-use-github-style] h3:hover .anchor, .markdown-preview h4:hover .anchor, .markdown-preview[data-use-github-style] h4:hover .anchor, .markdown-preview h5:hover .anchor, .markdown-preview[data-use-github-style] h5:hover .anchor, .markdown-preview h6:hover .anchor, .markdown-preview[data-use-github-style] h6:hover .anchor { padding-left: 8px; margin-left: -30px; text-decoration: none; }
+.markdown-preview h1:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h1:hover .anchor .octicon-link, .markdown-preview h2:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h2:hover .anchor .octicon-link, .markdown-preview h3:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h3:hover .anchor .octicon-link, .markdown-preview h4:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h4:hover .anchor .octicon-link, .markdown-preview h5:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h5:hover .anchor .octicon-link, .markdown-preview h6:hover .anchor .octicon-link, .markdown-preview[data-use-github-style] h6:hover .anchor .octicon-link { display: inline-block; }
+.markdown-preview h1 tt, .markdown-preview[data-use-github-style] h1 tt, .markdown-preview h2 tt, .markdown-preview[data-use-github-style] h2 tt, .markdown-preview h3 tt, .markdown-preview[data-use-github-style] h3 tt, .markdown-preview h4 tt, .markdown-preview[data-use-github-style] h4 tt, .markdown-preview h5 tt, .markdown-preview[data-use-github-style] h5 tt, .markdown-preview h6 tt, .markdown-preview[data-use-github-style] h6 tt, .markdown-preview h1 code, .markdown-preview[data-use-github-style] h1 code, .markdown-preview h2 code, .markdown-preview[data-use-github-style] h2 code, .markdown-preview h3 code, .markdown-preview[data-use-github-style] h3 code, .markdown-preview h4 code, .markdown-preview[data-use-github-style] h4 code, .markdown-preview h5 code, .markdown-preview[data-use-github-style] h5 code, .markdown-preview h6 code, .markdown-preview[data-use-github-style] h6 code { font-size: inherit; }
+.markdown-preview h1, .markdown-preview[data-use-github-style] h1 { padding-bottom: 0.3em; font-size: 2.25em; line-height: 1.2; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); }
+.markdown-preview h1 .anchor, .markdown-preview[data-use-github-style] h1 .anchor { line-height: 1; }
+.markdown-preview h2, .markdown-preview[data-use-github-style] h2 { padding-bottom: 0.3em; font-size: 1.75em; line-height: 1.225; border-bottom-width: 1px; border-bottom-style: solid; border-bottom-color: rgb(238, 238, 238); }
+.markdown-preview h2 .anchor, .markdown-preview[data-use-github-style] h2 .anchor { line-height: 1; }
+.markdown-preview h3, .markdown-preview[data-use-github-style] h3 { font-size: 1.5em; line-height: 1.43; }
+.markdown-preview h3 .anchor, .markdown-preview[data-use-github-style] h3 .anchor { line-height: 1.2; }
+.markdown-preview h4, .markdown-preview[data-use-github-style] h4 { font-size: 1.25em; }
+.markdown-preview h4 .anchor, .markdown-preview[data-use-github-style] h4 .anchor { line-height: 1.2; }
+.markdown-preview h5, .markdown-preview[data-use-github-style] h5 { font-size: 1em; }
+.markdown-preview h5 .anchor, .markdown-preview[data-use-github-style] h5 .anchor { line-height: 1.1; }
+.markdown-preview h6, .markdown-preview[data-use-github-style] h6 { font-size: 1em; color: rgb(119, 119, 119); }
+.markdown-preview h6 .anchor, .markdown-preview[data-use-github-style] h6 .anchor { line-height: 1.1; }
+.markdown-preview p, .markdown-preview[data-use-github-style] p, .markdown-preview blockquote, .markdown-preview[data-use-github-style] blockquote, .markdown-preview ul, .markdown-preview[data-use-github-style] ul, .markdown-preview ol, .markdown-preview[data-use-github-style] ol, .markdown-preview dl, .markdown-preview[data-use-github-style] dl, .markdown-preview table, .markdown-preview[data-use-github-style] table, .markdown-preview pre, .markdown-preview[data-use-github-style] pre { margin-top: 0px; margin-bottom: 16px; }
+.markdown-preview hr, .markdown-preview[data-use-github-style] hr { height: 4px; padding: 0px; margin: 16px 0px; border: 0px none; background-color: rgb(231, 231, 231); }
+.markdown-preview ul, .markdown-preview[data-use-github-style] ul, .markdown-preview ol, .markdown-preview[data-use-github-style] ol { padding-left: 2em; }
+.markdown-preview ul.no-list, .markdown-preview[data-use-github-style] ul.no-list, .markdown-preview ol.no-list, .markdown-preview[data-use-github-style] ol.no-list { padding: 0px; list-style-type: none; }
+.markdown-preview ul ul, .markdown-preview[data-use-github-style] ul ul, .markdown-preview ul ol, .markdown-preview[data-use-github-style] ul ol, .markdown-preview ol ol, .markdown-preview[data-use-github-style] ol ol, .markdown-preview ol ul, .markdown-preview[data-use-github-style] ol ul { margin-top: 0px; margin-bottom: 0px; }
+.markdown-preview li > p, .markdown-preview[data-use-github-style] li > p { margin-top: 16px; }
+.markdown-preview dl, .markdown-preview[data-use-github-style] dl { padding: 0px; }
+.markdown-preview dl dt, .markdown-preview[data-use-github-style] dl dt { padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold; }
+.markdown-preview dl dd, .markdown-preview[data-use-github-style] dl dd { padding: 0px 16px; margin-bottom: 16px; }
+.markdown-preview blockquote, .markdown-preview[data-use-github-style] blockquote { padding: 0px 15px; color: rgb(119, 119, 119); border-left-width: 4px; border-left-style: solid; border-left-color: rgb(221, 221, 221); }
+.markdown-preview blockquote > :first-child, .markdown-preview[data-use-github-style] blockquote > :first-child { margin-top: 0px; }
+.markdown-preview blockquote > :last-child, .markdown-preview[data-use-github-style] blockquote > :last-child { margin-bottom: 0px; }
+.markdown-preview table, .markdown-preview[data-use-github-style] table { display: block; width: 100%; overflow: auto; word-break: normal; }
+.markdown-preview table th, .markdown-preview[data-use-github-style] table th { font-weight: bold; }
+.markdown-preview table th, .markdown-preview[data-use-github-style] table th, .markdown-preview table td, .markdown-preview[data-use-github-style] table td { padding: 6px 13px; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview table tr, .markdown-preview[data-use-github-style] table tr { border-top-width: 1px; border-top-style: solid; border-top-color: rgb(204, 204, 204); background-color: rgb(255, 255, 255); }
+.markdown-preview table tr:nth-child(2n), .markdown-preview[data-use-github-style] table tr:nth-child(2n) { background-color: rgb(248, 248, 248); }
+.markdown-preview img, .markdown-preview[data-use-github-style] img { max-width: 100%; box-sizing: border-box; }
+.markdown-preview .emoji, .markdown-preview[data-use-github-style] .emoji { max-width: none; }
+.markdown-preview span.frame, .markdown-preview[data-use-github-style] span.frame { display: block; overflow: hidden; }
+.markdown-preview span.frame > span, .markdown-preview[data-use-github-style] span.frame > span { display: block; float: left; width: auto; padding: 7px; margin: 13px 0px 0px; overflow: hidden; border: 1px solid rgb(221, 221, 221); }
+.markdown-preview span.frame span img, .markdown-preview[data-use-github-style] span.frame span img { display: block; float: left; }
+.markdown-preview span.frame span span, .markdown-preview[data-use-github-style] span.frame span span { display: block; padding: 5px 0px 0px; clear: both; color: rgb(51, 51, 51); }
+.markdown-preview span.align-center, .markdown-preview[data-use-github-style] span.align-center { display: block; overflow: hidden; clear: both; }
+.markdown-preview span.align-center > span, .markdown-preview[data-use-github-style] span.align-center > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: center; }
+.markdown-preview span.align-center span img, .markdown-preview[data-use-github-style] span.align-center span img { margin: 0px auto; text-align: center; }
+.markdown-preview span.align-right, .markdown-preview[data-use-github-style] span.align-right { display: block; overflow: hidden; clear: both; }
+.markdown-preview span.align-right > span, .markdown-preview[data-use-github-style] span.align-right > span { display: block; margin: 13px 0px 0px; overflow: hidden; text-align: right; }
+.markdown-preview span.align-right span img, .markdown-preview[data-use-github-style] span.align-right span img { margin: 0px; text-align: right; }
+.markdown-preview span.float-left, .markdown-preview[data-use-github-style] span.float-left { display: block; float: left; margin-right: 13px; overflow: hidden; }
+.markdown-preview span.float-left span, .markdown-preview[data-use-github-style] span.float-left span { margin: 13px 0px 0px; }
+.markdown-preview span.float-right, .markdown-preview[data-use-github-style] span.float-right { display: block; float: right; margin-left: 13px; overflow: hidden; }
+.markdown-preview span.float-right > span, .markdown-preview[data-use-github-style] span.float-right > span { display: block; margin: 13px auto 0px; overflow: hidden; text-align: right; }
+.markdown-preview code, .markdown-preview[data-use-github-style] code, .markdown-preview tt, .markdown-preview[data-use-github-style] tt { padding: 0.2em 0px; margin: 0px; font-size: 85%; border-radius: 3px; background-color: rgba(0, 0, 0, 0.0392157); }
+.markdown-preview code::before, .markdown-preview[data-use-github-style] code::before, .markdown-preview tt::before, .markdown-preview[data-use-github-style] tt::before, .markdown-preview code::after, .markdown-preview[data-use-github-style] code::after, .markdown-preview tt::after, .markdown-preview[data-use-github-style] tt::after { letter-spacing: -0.2em; content: ' '; }
+.markdown-preview code br, .markdown-preview[data-use-github-style] code br, .markdown-preview tt br, .markdown-preview[data-use-github-style] tt br { display: none; }
+.markdown-preview del code, .markdown-preview[data-use-github-style] del code { text-decoration: inherit; }
+.markdown-preview pre > code, .markdown-preview[data-use-github-style] pre > code { padding: 0px; margin: 0px; font-size: 100%; word-break: normal; white-space: pre; border: 0px; background: transparent; }
+.markdown-preview .highlight, .markdown-preview[data-use-github-style] .highlight { margin-bottom: 16px; }
+.markdown-preview .highlight pre, .markdown-preview[data-use-github-style] .highlight pre, .markdown-preview pre, .markdown-preview[data-use-github-style] pre { padding: 16px; overflow: auto; font-size: 85%; line-height: 1.45; border-radius: 3px; background-color: rgb(247, 247, 247); }
+.markdown-preview .highlight pre, .markdown-preview[data-use-github-style] .highlight pre { margin-bottom: 0px; word-break: normal; }
+.markdown-preview pre, .markdown-preview[data-use-github-style] pre { word-wrap: normal; }
+.markdown-preview pre code, .markdown-preview[data-use-github-style] pre code, .markdown-preview pre tt, .markdown-preview[data-use-github-style] pre tt { display: inline; max-width: initial; padding: 0px; margin: 0px; overflow: initial; line-height: inherit; word-wrap: normal; border: 0px; background-color: transparent; }
+.markdown-preview pre code::before, .markdown-preview[data-use-github-style] pre code::before, .markdown-preview pre tt::before, .markdown-preview[data-use-github-style] pre tt::before, .markdown-preview pre code::after, .markdown-preview[data-use-github-style] pre code::after, .markdown-preview pre tt::after, .markdown-preview[data-use-github-style] pre tt::after { content: normal; }
+.markdown-preview kbd, .markdown-preview[data-use-github-style] kbd { display: inline-block; padding: 3px 5px; font-size: 11px; line-height: 10px; color: rgb(85, 85, 85); vertical-align: middle; border-style: solid; border-width: 1px; border-color: rgb(204, 204, 204) rgb(204, 204, 204) rgb(187, 187, 187); border-radius: 3px; box-shadow: rgb(187, 187, 187) 0px -1px 0px inset; background-color: rgb(252, 252, 252); }
+.markdown-preview, .markdown-preview[data-use-github-style], .markdown-preview code, .markdown-preview[data-use-github-style] code { color: rgb(51, 51, 51); }
+.markdown-preview h1, .markdown-preview[data-use-github-style] h1, .markdown-preview h2, .markdown-preview[data-use-github-style] h2, .markdown-preview h3, .markdown-preview[data-use-github-style] h3, .markdown-preview h4, .markdown-preview[data-use-github-style] h4, .markdown-preview h5, .markdown-preview[data-use-github-style] h5, .markdown-preview h6, .markdown-preview[data-use-github-style] h6 { -webkit-font-smoothing: antialiased; cursor: text; }
+.markdown-preview > h1:first-child, .markdown-preview[data-use-github-style] > h1:first-child, .markdown-preview > h1:first-child + h2, .markdown-preview[data-use-github-style] > h1:first-child + h2, .markdown-preview > h2:first-child, .markdown-preview[data-use-github-style] > h2:first-child, .markdown-preview > h3:first-child, .markdown-preview[data-use-github-style] > h3:first-child, .markdown-preview > h4:first-child, .markdown-preview[data-use-github-style] > h4:first-child, .markdown-preview > h5:first-child, .markdown-preview[data-use-github-style] > h5:first-child, .markdown-preview > h6:first-child, .markdown-preview[data-use-github-style] > h6:first-child { margin-top: 0px; padding-top: 0px; }
+.markdown-preview a, .markdown-preview[data-use-github-style] a, .markdown-preview a code, .markdown-preview[data-use-github-style] a code { color: rgb(65, 131, 196); }
+.markdown-preview a:first-child h1, .markdown-preview[data-use-github-style] a:first-child h1, .markdown-preview a:first-child h2, .markdown-preview[data-use-github-style] a:first-child h2, .markdown-preview a:first-child h3, .markdown-preview[data-use-github-style] a:first-child h3, .markdown-preview a:first-child h4, .markdown-preview[data-use-github-style] a:first-child h4, .markdown-preview a:first-child h5, .markdown-preview[data-use-github-style] a:first-child h5, .markdown-preview a:first-child h6, .markdown-preview[data-use-github-style] a:first-child h6 { margin-top: 0px; padding-top: 0px; }
+.markdown-preview h1 + p, .markdown-preview[data-use-github-style] h1 + p, .markdown-preview h2 + p, .markdown-preview[data-use-github-style] h2 + p, .markdown-preview h3 + p, .markdown-preview[data-use-github-style] h3 + p, .markdown-preview h4 + p, .markdown-preview[data-use-github-style] h4 + p, .markdown-preview h5 + p, .markdown-preview[data-use-github-style] h5 + p, .markdown-preview h6 + p, .markdown-preview[data-use-github-style] h6 + p { margin-top: 0px; }
+.markdown-preview li p.first, .markdown-preview[data-use-github-style] li p.first { display: inline-block; }
+.markdown-preview ul li > :first-child, .markdown-preview[data-use-github-style] ul li > :first-child, .markdown-preview ol li > :first-child, .markdown-preview[data-use-github-style] ol li > :first-child, .markdown-preview ul li ul:first-of-type, .markdown-preview[data-use-github-style] ul li ul:first-of-type, .markdown-preview ol li ul:first-of-type, .markdown-preview[data-use-github-style] ol li ul:first-of-type { margin-top: 0px; }
+.markdown-preview ol > li, .markdown-preview[data-use-github-style] ol > li { list-style-type: decimal; }
+.markdown-preview ul > li, .markdown-preview[data-use-github-style] ul > li { list-style-type: disc; }
+.markdown-preview dl dt:first-child, .markdown-preview[data-use-github-style] dl dt:first-child { padding: 0px; }
+.markdown-preview dl dt > :first-child, .markdown-preview[data-use-github-style] dl dt > :first-child { margin-top: 0px; }
+.markdown-preview dl dt > :last-child, .markdown-preview[data-use-github-style] dl dt > :last-child { margin-bottom: 0px; }
+.markdown-preview dl dd > :first-child, .markdown-preview[data-use-github-style] dl dd > :first-child { margin-top: 0px; }
+.markdown-preview dl dd > :last-child, .markdown-preview[data-use-github-style] dl dd > :last-child { margin-bottom: 0px; }
+.markdown-preview blockquote p, .markdown-preview[data-use-github-style] blockquote p { font-size: 16px; line-height: 1.5; }
+.markdown-preview pre.editor-colors, .markdown-preview[data-use-github-style] pre.editor-colors { padding: 16px; overflow: auto; font-size: 84%; line-height: 1.45; border-radius: 3px; background-color: rgb(57, 57, 57); }
+.markdown-preview pre.editor-colors, .markdown-preview[data-use-github-style] pre.editor-colors { margin-bottom: 16px; word-break: normal; }
+.markdown-preview code, .markdown-preview[data-use-github-style] code, .markdown-preview tt, .markdown-preview[data-use-github-style] tt, .markdown-preview pre.editor-colors, .markdown-preview[data-use-github-style] pre.editor-colors { font-family: Consolas, 'Liberation Mono', Courier, monospace; }
+.markdown-preview .emoji, .markdown-preview[data-use-github-style] .emoji { height: 20px; width: 20px; }
+.gutter .line-number.linter-info .icon-right {
+  visibility: visible;
+}
+.gutter .line-number.linter-info .icon-right:before {
+  color: #5293d8;
+  content: "\f052";
+  font-size: 1.1em;
+}
+.gutter .line-number.linter-warning .icon-right {
+  visibility: visible;
+}
+.gutter .line-number.linter-warning .icon-right:before {
+  color: #ff982d;
+  content: "\f052";
+  font-size: 1.1em;
+}
+.gutter .line-number.linter-error .icon-right {
+  visibility: visible;
+}
+.gutter .line-number.linter-error .icon-right:before {
+  color: #cc0000;
+  content: "\f052";
+  font-size: 1.1em;
+}
+
+.highlight.linter-info .region {
+  background-color: #0098ff;
+  -webkit-mask-image: url(atom://linter/images/wave.svg);
+  -webkit-mask-repeat: repeat-x;
+  -webkit-mask-size: .9em 1.3em;
+  -webkit-mask-position: bottom left;
+}
+.highlight.linter-warning .region {
+  background-color: #df8500;
+  -webkit-mask-image: url(atom://linter/images/wave.svg);
+  -webkit-mask-repeat: repeat-x;
+  -webkit-mask-size: .9em 1.3em;
+  -webkit-mask-position: bottom left;
+}
+.highlight.linter-error .region {
+  background-color: #cc0000;
+  -webkit-mask-image: url(atom://linter/images/wave.svg);
+  -webkit-mask-repeat: repeat-x;
+  -webkit-mask-size: .9em 1.3em;
+  -webkit-mask-position: bottom left;
+}
+
+.bracket-matcher .region {
+  border-bottom: 1px dotted lime;
+  position: absolute;
+}
+
+.spell-check-misspelling .region {
+  border-bottom: 1px dashed rgba(250, 128, 114, 0.5);
+}
+
+pre.editor-colors,
+.host {
+  background-color: #393939;
+  color: #dedede;
+}
+pre.editor-colors .gutter,
+.host .gutter {
+  background-color: #393939;
+  color: #dedede;
+}
+pre.editor-colors .gutter .line-number.cursor-line,
+.host .gutter .line-number.cursor-line {
+  background-color: #303030;
+  color: #dedede;
+}
+pre.editor-colors .gutter .line-number.cursor-line-no-selection,
+.host .gutter .line-number.cursor-line-no-selection {
+  color: #dedede;
+}
+pre.editor-colors .wrap-guide,
+.host .wrap-guide {
+  color: rgba(165, 165, 165, 0.32);
+}
+pre.editor-colors .indent-guide,
+.host .indent-guide {
+  color: rgba(165, 165, 165, 0.32);
+}
+pre.editor-colors .invisible-character,
+.host .invisible-character {
+  color: rgba(165, 165, 165, 0.32);
+}
+pre.editor-colors .search-results .marker .region,
+.host .search-results .marker .region {
+  background-color: transparent;
+  border: rgba(165, 165, 165, 0.32);
+}
+pre.editor-colors .search-results .marker.current-result .region,
+.host .search-results .marker.current-result .region {
+  border: #dedede;
+}
+pre.editor-colors .cursor,
+.host .cursor {
+  border-color: #d6d6d6;
+}
+pre.editor-colors .selection .region,
+.host .selection .region {
+  background-color: rgba(131, 131, 131, 0.61);
+}
+pre.editor-colors .line-number.cursor-line-no-selection,
+.host .line-number.cursor-line-no-selection,
+pre.editor-colors .line.cursor-line,
+.host .line.cursor-line {
+  background-color: #303030;
+}
+.comment {
+  color: #87AE86;
+}
+.meta.preprocessor.c {
+  color: #FD8003;
+}
+.keyword.other.phpdoc {
+  color: #568E4D;
+}
+.punctuation.definition.comment,
+.punctuation.whitespace.comment {
+  font-weight: bold;
+  color: #a0cfa1;
+}
+.keyword.other.directive {
+  font-weight: bold;
+  color: #DEDEDE;
+}
+.keyword.other.directive.line-number {
+  text-decoration: underline;
+}
+.constant.character {
+  color: #FF8080;
+}
+.string,
+.string.unquoted {
+  color: #D68686;
+}
+.string.unquoted.heredoc {
+  color: #D6D6D6;
+}
+.constant.numeric {
+  color: #87D6D5;
+}
+.constant.language,
+.support.constant.core {
+  font-weight: bold;
+  color: #D6D6AE;
+}
+.constant.character,
+.constant.other,
+.support.constant {
+  color: #CC9495;
+}
+.keyword,
+.keyword.control,
+.meta.selector.css,
+.entity.other.attribute-name {
+  color: #FED6AF;
+}
+.entity.name.module,
+.support.other.module {
+  font-weight: bold;
+  color: #FF8000;
+}
+.keyword.operator,
+.punctuation.definition.tag,
+.punctuation:not(.punctuation.definition.comment:not(.punctuation.definition)) {
+  color: #D0D1A8;
+}
+.source.ocaml .keyword.operator.symbol.infix.floating-point {
+  text-decoration: underline;
+}
+.source.ocaml .keyword.operator.symbol.prefix.floating-point {
+  text-decoration: underline;
+}
+.storage.type,
+.storage.modifier,
+.support.type {
+  color: #FFFB9D;
+}
+.entity.name.class.variant {
+  color: #4080A0;
+}
+.entity.name.type,
+.entity.other {
+  color: #D6D6D6;
+}
+.entity.other.inherited-class {
+  color: #D78D1B;
+}
+.storage.type.user-defined,
+.meta.property-list {
+  color: #FFE000;
+}
+.entity.name.type,
+.entity.name.type.class,
+.entity.other.attribute-name.class.css,
+.support.class {
+  color: #F4A020;
+}
+.invalid {
+  font-weight: bold;
+  font-style: italic;
+  text-decoration: underline;
+  color: #FF5274;
+}
+.entity.other.attribute-name.html {
+  font-weight: bold;
+  color: #D6D7AF;
+}
+.entity.name.tag {
+  color: #D6D7AF;
+}
+.punctuation.section.embedded.begin.php,
+.punctuation.section.embedded.end.php {
+  color: #898989;
+}
+.variable,
+.variable.parameter,
+.variable.other {
+  font-weight: bold;
+  color: #FED6AF;
+}
+.support.function.construct {
+  color: #FED6AF;
+}
+.punctuation.definition.variable {
+  color: #D0D1A8;
+}
+.support.function,
+.meta.function-name,
+.entity.name.function {
+  color: #FFFD87;
+}
+.support.function {
+  color: #C7BA18;
+}
+.meta.brace {
+  color: rgba(120, 206, 204, 0.5);
+}
+.punctuation.definition.string.begin,
+.punctuation.definition.string.end {
+  color: rgba(214, 214, 214, 0.5);
+}
+.punctuation.definition.tag.begin.html,
+.punctuation.definition.tag.end.html,
+.meta.tag.structure.any.html {
+  font-weight: bold;
+  color: rgba(254, 213, 174, 0.58);
+}
+.entity.name.tag.yaml {
+  font-weight: bold;
+  color: #FED6AF;
+}
+.punctuation.definition.entry {
+  color: #D6D6D6;
+}
+.keyword.other.DML.sql,
+.keyword.other.data-integrity.sql {
+  font-weight: bold;
+  color: #B7B7B7;
+}
+.source.sql,
+.constant.other.database-name.sql,
+.constant.other.table-name.sql,
+.keyword.operator.star {
+  font-weight: bold;
+  color: #95BFF3;
+}
+.source.diff {
+  color: #FFFFFF;
+  background-color: #393939;
+}
+.source.diff .meta.diff.comment,
+.source.diff .meta.toc-list.comment.diff {
+  color: #FFFFFF;
+  background-color: #9F9D15;
+}
+.meta.diff.header.from-file {
+  font-weight: bold;
+  color: #CA7172;
+  background-color: #393939;
+}
+.meta.diff.header.to-file {
+  font-weight: bold;
+  color: #60B38A;
+  background-color: #393939;
+}
+.meta.diff.range.unified {
+  color: #8CD0D3;
+  background-color: #393939;
+}
+.markup.inserted.diff {
+  color: #60B38A;
+  background-color: #393939;
+}
+.markup.deleted.diff {
+  color: #CA7172;
+  background-color: #393939;
+}
+.string.regexp {
+  color: #C76F41;
+}
+.string.regexp.arbitrary-repitition {
+  color: #9E6A5F;
+}
+.punctuation.definition.arbitrary-repitition {
+  color: rgba(255, 255, 255, 0.37);
+}
+.string.regexp.character-class {
+  color: #CB8E81;
+}
+.punctuation.definition.character-class {
+  color: rgba(255, 255, 255, 0.37);
+}
+.markup.raw.inline.markdown {
+  color: #FED6AF;
+}
+.markup.heading.markdown,
+.punctuation.definition.heading {
+  font-weight: bold;
+  color: #FFFFFF;
+}
+.markup.list {
+  color: #DEDEDE;
+}
+</style>
+  </head>
+  <body class='markdown-preview'><h1 id="orthros-messenger-api">Orthros Messenger API</h1>
+<p>This is the backend to the Orthros messenger, it handles everything from public key management to the messaging queue. This all happens over GET and POST requests.</p>
+<p><em>Note from author; The PHP code may not be the best, but it does work. Much of this may be very hacky and inefficient, but overtime I do hope to improve the code greatly for a solid product. At the moment it&#39;s really my first project that relies on a PHP backend so I&#39;m still learning. This documentation will also be greatly expanded overtime as well.</em></p>
+<p>The public API can be requested at <code>https://api.orthros.ninja</code>. If you wish to use this backend privately, you will need to generate your own RSA keys for server side encryption as well as creating a secure key for AES crypto. The AES IV (initialization vector) can be generated randomly, but at the moment it is statically stored in the <code>config.ini</code>, this can be randomly generated per-message but would need to be stored with the associated message in a secure way, this is currently considered a TODO task.</p>
+<h2 id="security-features">Security Features</h2>
+<h3 id="one-time-use-key">One-time use key</h3>
+<p>Using the <em>gen_key</em> function will return a key with a length of 20, this will be used and required by functions that handle user-specific and possibly sensitive information. A copy is encrypted with the users public key, another with the servers public key. Both of these are decrypted and checked against each other to ensure the users identity.</p>
+<h3 id="server-side-message-encryption">Server side message encryption</h3>
+<p>The AES crypto system is used to encrypt the message data for storage on the server, this isn&#39;t necessarily needed but adds an extra quick layer of security to sensitive data such as who sent the target message. The key and IV are static at the moment, the IV can (and should?) be dynamic but would require the IV to be stored somewhere on the server and per message which makes it a bit convoluted.</p>
+<h2 id="functions">Functions</h2>
+<p>To call a function you will need to pass the GET parameter &quot;action&quot; which will specify what function is to be ran <strong>this is a required parameter</strong>, the UUID  parameter must be a valid UUID for the action to be executed <strong>this parameter is also required</strong>.</p>
+<p>An example;</p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span class="markup underline link https hyperlink"><span>https://api.orthros.ninja/?action=check&amp;UUID=EE93B33A-A4AB-428C-ACF7-5081716D4165</span></span></span></span></div></pre><p>All functions will return the same basic formatted response, returned &quot;error&quot; 0 is a successful execution, 1 is unsuccessful (check result for error description);</p>
+<pre class="editor-colors lang-json"><div class="line"><span class="source json"><span class="meta structure dictionary json"><span class="punctuation definition dictionary begin json"><span>{</span></span></span></span></div><div class="line"><span class="source json"><span class="meta structure dictionary json"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="string quoted double json"><span class="punctuation definition string begin json"><span>&quot;</span></span><span>result</span><span class="punctuation definition string end json"><span>&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json"><span>:</span></span><span>&nbsp;</span><span class="string quoted double json"><span class="punctuation definition string begin json"><span>&quot;</span></span><span>some&nbsp;good&nbsp;or&nbsp;bad&nbsp;result</span><span class="punctuation definition string end json"><span>&quot;</span></span></span><span class="punctuation separator dictionary pair json"><span>,</span></span></span></span></span></div><div class="line"><span class="source json"><span class="meta structure dictionary json"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="string quoted double json"><span class="punctuation definition string begin json"><span>&quot;</span></span><span>called</span><span class="punctuation definition string end json"><span>&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json"><span>:</span></span><span>&nbsp;</span><span class="string quoted double json"><span class="punctuation definition string begin json"><span>&quot;</span></span><span>some_action_name</span><span class="punctuation definition string end json"><span>&quot;</span></span></span><span class="punctuation separator dictionary pair json"><span>,</span></span></span></span></span></div><div class="line"><span class="source json"><span class="meta structure dictionary json"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="string quoted double json"><span class="punctuation definition string begin json"><span>&quot;</span></span><span>error</span><span class="punctuation definition string end json"><span>&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json"><span>:</span></span><span>&nbsp;</span><span class="constant numeric json"><span>0</span></span></span></span></span></div><div class="line"><span class="source json"><span class="meta structure dictionary json"><span class="punctuation definition dictionary end json"><span>}</span></span></span></span></div></pre>
+<h3 id="check">check</h3>
+<p>Check if public key exists for provided UUID.</p>
+<p><strong>Required GET params; action, UUID.</strong></p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span class="markup underline link https hyperlink"><span>https://api.orthros.ninja/?action=check&amp;UUID=EE93B33A-A4AB-428C-ACF7-5081716D4165</span></span></span></span></div></pre><h3 id="download">download</h3>
+<p>Download public key for receiver.</p>
+<p><strong>Required GET params; action, UUID, receiver</strong></p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span class="markup underline link https hyperlink"><span>https://api.orthros.ninja/?action=download&amp;UUID=EE93B33A-A4AB-428C-ACF7-5081716D4165&amp;receiver=17cc8f0b-ca3c-4801-87c3-80cbc1989b0f</span></span></span></span></div></pre><h3 id="upload">upload</h3>
+<p>Upload public key for UUID, requires the one-time usage key.</p>
+<p><strong>Required GET params; action, UUID</strong></p>
+<p><strong>Required POST params; pub, key</strong></p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span class="markup underline link https hyperlink"><span>https://api.orthros.ninja/?action=upload&amp;UUID=EE93B33A-A4AB-428C-ACF7-5081716D4165</span></span></span></span></div></pre><p>POST &quot;pub&quot; package</p>
+<pre class="editor-colors lang-json"><div class="line"><span class="source json"><span class="meta structure dictionary json"><span class="punctuation definition dictionary begin json"><span>{</span></span></span></span></div><div class="line"><span class="source json"><span class="meta structure dictionary json"><span>&nbsp;&nbsp;</span><span class="string quoted double json"><span class="punctuation definition string begin json"><span>&quot;</span></span><span>pub</span><span class="punctuation definition string end json"><span>&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json"><span>:</span></span><span class="string quoted double json"><span class="punctuation definition string begin json"><span>&quot;</span></span><span>-----BEGIN&nbsp;PUBLIC&nbsp;KEY-----</span><span class="constant character escape json"><span>\n</span></span><span>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0</span><span class="constant character escape json"><span>\n</span></span><span>FPqri0cb2JZfXJ/DgYSF6vUpwmJG8wVQZKjeGcjDOL5UlsuusFncCzWBQ7RKNUSesmQRMSGkVb1/</span><span class="constant character escape json"><span>\n</span></span><span>3j+skZ6UtW+5u09lHNsj6tQ51s1SPrCBkedbNf0Tp0GbMJDyR4e9T04ZZwIDAQAB</span><span class="constant character escape json"><span>\n</span></span><span>-----END&nbsp;PUBLIC&nbsp;KEY-----</span><span class="punctuation definition string end json"><span>&quot;</span></span></span></span></span></span></div><div class="line"><span class="source json"><span class="meta structure dictionary json"><span class="punctuation definition dictionary end json"><span>}</span></span></span></span></div></pre>
+<h3 id="send">send</h3>
+<p>Send message to receiving UUID, requires generation of a one-time use key.</p>
+<p><strong>Required GET params; action, UUID, receiver</strong></p>
+<p><strong>Required POST params; msg, key</strong></p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span class="markup underline link https hyperlink"><span>https://api.orthros.ninja/?action=send&amp;UUID=EE93B33A-A4AB-428C-ACF7-5081716D4165&amp;reciever=ac5a421c-0891-4d3e-922c-f3c838d7dceb</span></span></span></span></div></pre><p>POST &quot;msg&quot; package</p>
+<pre class="editor-colors lang-json"><div class="line"><span class="source json"><span>msg&nbsp;=&nbsp;</span><span class="meta structure dictionary json"><span class="punctuation definition dictionary begin json"><span>{</span></span></span></span></div><div class="line"><span class="source json"><span class="meta structure dictionary json"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="string quoted double json"><span class="punctuation definition string begin json"><span>&quot;</span></span><span>msg</span><span class="punctuation definition string end json"><span>&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json"><span>:</span></span><span>&nbsp;</span><span class="string quoted double json"><span class="punctuation definition string begin json"><span>&quot;</span></span><span>KdJDWi286llL8AC7nsYi7qlocVQzykYen9zZKCRzAwvfjLn0&nbsp;AROJQDd9WTAk6qLwP4lQGLxTXx106IH72EBu7Ajqj&nbsp;bFLZnuciP4tflF4c1tsdQ57MPiEWBWLmxfX/J&nbsp;2MybljJ&nbsp;O99Idd3FPlwVEoBln1iiKuSgJjZxa2xjKI=</span><span class="punctuation definition string end json"><span>&quot;</span></span></span><span class="punctuation separator dictionary pair json"><span>,</span></span></span></span></span></div><div class="line"><span class="source json"><span class="meta structure dictionary json"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="string quoted double json"><span class="punctuation definition string begin json"><span>&quot;</span></span><span>sender</span><span class="punctuation definition string end json"><span>&quot;</span></span></span><span class="meta structure dictionary value json"><span class="punctuation separator dictionary key-value json"><span>:</span></span><span>&nbsp;</span><span class="string quoted double json"><span class="punctuation definition string begin json"><span>&quot;</span></span><span>17cc8f0b-ca3c-4801-87c3-80cbc1989b0f</span><span class="punctuation definition string end json"><span>&quot;</span></span></span></span></span></span></div><div class="line"><span class="source json"><span class="meta structure dictionary json"><span class="punctuation definition dictionary end json"><span>}</span></span></span><span>,</span></span></div><div class="line"><span class="source json"><span>key&nbsp;=&nbsp;some_long_key</span></span></div></pre>
+<h3 id="list">list</h3>
+<p>List messages in que for UUID to be decrypted with the users private key.</p>
+<p><strong>Required GET params; action, UUID</strong></p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span class="markup underline link https hyperlink"><span>https://api.orthros.ninja/?action=list&amp;UUID=EE93B33A-A4AB-428C-ACF7-5081716D4165</span></span></span></span></div></pre><h3 id="get">get</h3>
+<p>Get (encrypted) message in que for message ID.</p>
+<p><strong>Required GET params; action, UUID, msg_id</strong></p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span class="markup underline link https hyperlink"><span>https://api.orthros.ninja/?action=get&amp;UUID=EE93B33A-A4AB-428C-ACF7-5081716D4165&amp;msg_id=1432537385</span></span></span></span></div></pre><h3 id="delete_msg">delete_msg</h3>
+<p>Delete message in que for message ID, requires generation of a one-time use key.</p>
+<p><strong>Required GET params; action, UUID, msg_id</strong></p>
+<p><strong>Required POST params; key</strong></p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span class="markup underline link https hyperlink"><span>https://api.orthros.ninja/?action=delete_msg&amp;UUID=EE93B33A-A4AB-428C-ACF7-5081716D4165&amp;msg_id=1432537385</span></span></span></span></div></pre><h3 id="gen_key">gen_key</h3>
+<p>Generate a one-time use key.</p>
+<p><strong>Required GET params; action, UUID</strong></p>
+<pre class="editor-colors lang-text"><div class="line"><span class="text plain"><span class="meta paragraph text"><span class="markup underline link https hyperlink"><span>https://api.orthros.ninja/?action=gen_key&amp;UUID=EE93B33A-A4AB-428C-ACF7-5081716D4165</span></span></span></span></div></pre></body>
+</html>
