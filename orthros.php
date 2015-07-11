@@ -14,7 +14,7 @@
     $hashedID = md5($_GET['UUID']);
     $globalUserDir = './users/'.$hashedID;
     $globalFileName = $globalUserDir.'/pub.pub';
-    //$iv = substr($hashedID, 0, 17) + "9a2ae11d94" + substr($hashedID, 0, -5); // rnd me pls
+    $iv = substr($hashedID, 0, 17) + "9a2ae11d94" + substr($hashedID, 0, -5); // rnd me pls
     $aes = new AES($config_array["aes_key"]);
     
     // commonly used functions
