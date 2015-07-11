@@ -14,7 +14,7 @@
 	$hashedID = md5($_GET['UUID']);
 	$globalUserDir = './users/'.$hashedID;
 	$globalFileName = $globalUserDir.'/pub.pub';
-	$iv = substr($hashedID, 0, 17) + "9a2ae11d94" + substr($hashedID, 0, -5); // rnd me pls
+	//$iv = substr($hashedID, 0, 17) + "9a2ae11d94" + substr($hashedID, 0, -5); // rnd me pls
 	$aes = new AES($config_array["aes_key"]);
 	
 	// commonly used functions
@@ -82,9 +82,9 @@
 	// start action checks
 	if ($action == "check") {
 	    if (checkFile($globalFileName)) {
-	    	result("public key exsists", "check", 0);
+	    	result("public key exists", "check", 0);
 	    } else {
-	    	result("public key does not exsist", "check", 1);
+	    	result("public key does not exist", "check", 1);
 	    }
 	}elseif ($action == "download") {
 		if (empty($_GET["receiver"])) {
@@ -98,7 +98,7 @@
 			$pub = file_get_contents($receiverPub, true);
 			die(json_encode(['pub' => $pub, 'called' => 'download', 'error' => 0]));
 		}else {
-			result("public key does not exsist for provided UUID", "download", 1);
+			result("public key does not exist for provided UUID", "download", 1);
 		}
 	}elseif ($action == "upload") {
 		// handle the POST data, create folder for UUID, and store the pub in pub.pub
@@ -106,9 +106,21 @@
 			result("UUID is missing!", "upload", 1);
         }
 		if (empty($_POST['pub'])) {
-			result("public key is missing from POST", "upload", 1);
+			result("public key is missing from POST!", "upload", 1);
 		}
-		$newDir = './users/'.$hashedID;
+		if (strlen($_POST['pub']) !== 274) {
+			result("submitted pub is invalid in length", "upload", 1);
+		}
+		if (strpos($_POST['pub'],'<?php') !== false) {
+			result("submitted pub is invalid!", "upload", 1);
+		}
+		if (strpos($_POST['pub'],'-----BEGIN PUBLIC KEY-----') === false) {
+			result("submitted pub is missing the RSA header", "upload", 1);
+		}
+		if (strpos($_POST['pub'],'-----END PUBLIC KEY-----') === false) {
+			result("submitted pub is missing the RSA footer", "upload", 1);
+		}
+		$newDir = 'users/'.$hashedID;
 		mkdir($newDir, 0777, true);
 		$pubFile = fopen($globalFileName, "w") or result("couldn't create public key file on server", "upload", 1);;
 		fwrite($pubFile, $_POST['pub']);
@@ -132,7 +144,7 @@
 			result("one-time key is missing from POST", "send", 1);
 		}
 		if (!checkFile($globalUserDir."/temp_key")) {
-			result("temp_key does not exsist!", "send", 1);
+			result("temp_key does not exist!", "send", 1);
 		}
 		$decrypted_key;
 		$given_key = $_POST['key'];
@@ -142,10 +154,10 @@
     	if (strcmp($given_key, $decrypted_key) != 0) {
     		result("keys do not match up!", "send", 1);
     	}
-		// check if requested UUID (user) exsists and setup recieving location
+		// check if requested UUID (user) exists and setup recieving location
 		$receiverURL = './users/'.md5($_GET["receiver"]);
 		if (!checkFile($receiverURL)) {
-			result("public key does not exsist for provided receiving UUID", "send", 1);
+			result("public key does not exist for provided receiving UUID", "send", 1);
         } else {
 			if (!checkFile($receiverURL.'queue')) {
         		$newDir = $receiverURL.'/queue';
@@ -184,7 +196,7 @@
 			$msg = json_decode($msg, true);
 			die(json_encode(['msg' => $msg, 'called' => 'get', 'error' => 0], JSON_UNESCAPED_SLASHES));
 		}else {
-			result("message does not exsist", "get", 1);
+			result("message does not exist", "get", 1);
 		}
 	}elseif ($action == "delete_msg") {
 		if (empty($_GET["msg_id"])) {
@@ -197,7 +209,7 @@
 			result("one-time key is missing!", "delete_msg", 1);
 		}
 		if (!checkFile($globalUserDir."/temp_key")) {
-			result("temp_key does not exsist on server!", "delete_msg", 1);
+			result("temp_key does not exist on server!", "delete_msg", 1);
 		}
 		$decrypted_key;
 		$given_key = $_POST['key'];
@@ -211,7 +223,7 @@
 			if (unlink($messageURL)) {
 				die(json_encode(['msg' => $_GET["msg_id"], 'called' => 'delete_msg', 'error' => 0]));
 			}else {
-				result("message does not exsist or is already deleted!", "delete_msg", 1);
+				result("message does not exist or is already deleted!", "delete_msg", 1);
 			}
 		}
 	}elseif ($action == "gen_key") {
@@ -242,7 +254,7 @@
         	}
         	die(json_encode(['key' => $encrypted, 'called' => 'gen_key', 'error' => 0]));
 		}else {
-			result("public key does not exsist for provided UUID!", "gen_key", 1);
+			result("public key does not exist for provided UUID!", "gen_key", 1);
 		}
 	}elseif ($action == "obliterate") {
 		// check if UUID was passed
@@ -256,7 +268,7 @@
 			result("one-time key is missing from POST", "obliterate", 1);
 		}
 		if (!checkFile($globalUserDir."/temp_key")) {
-			result("temp_key does not exsist!", "obliterate", 1);
+			result("temp_key does not exist!", "obliterate", 1);
 		}
 		$decrypted_key;
 		$given_key = $_POST['key'];
@@ -268,7 +280,7 @@
     	}
 		$userDirectory = 'users/'.md5($_GET["UUID"]);
 		if (!checkFile($userDirectory)) {
-			result("public key does not exsist for provided receiving UUID $userDirectory", "obliterate", 1);
+			result("public key does not exist for provided receiving UUID $userDirectory", "obliterate", 1);
         } 
         deleteDir($userDirectory);
     	result("user was obliterated $userDirectory", "obliterate", 0);

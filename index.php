@@ -1,7 +1,6 @@
 <?php
 	/*
-		File: orthros.php
-		Description: backend api for orthros (previously bithash), does everything and nothing more. Functions as a pub upload/download reciever and a message que system.
+		File: index.php
 		Copyright 2015 Dylan "Haifisch" Laws
 	*/
 	// I'll improve code comments #son
