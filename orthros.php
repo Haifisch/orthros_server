@@ -6,12 +6,14 @@
     */
     // I'll improve code comments #son
     include("./lib/AES.class.php");
+    include("apns.php");
+    error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
     // initial variables
     $config_array = parse_ini_file("/etc/bithash/config.ini");
     $action = $_GET['action'];
     $UUID = $_GET['UUID'];
-    $hashedID = md5($_GET['UUID']);
+    $hashedID = hash("sha256", md5($UUID));
     $globalUserDir = './users/'.$hashedID;
     $globalFileName = $globalUserDir.'/pub.pub';
     $iv = substr($hashedID, 0, 17) + "9a2ae11d94" + substr($hashedID, 0, -5); // rnd me pls
@@ -32,7 +34,9 @@
     }
 
     function deleteDir($target) {
-        exec('rm -rf '.$target); // this /can't/ be safe...
+        if (is_dir($target)) {
+            rmdir($target);
+        }
     }
 
     function rand_key($length = 20) {
@@ -63,7 +67,7 @@
     if (empty($UUID)) { // check if UUID field is set
         result("UUID is missing!", "init", 1);
     }
-    if (!preg_match('/^\{?[A-Za-z0-9]{8}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{12}\}?$/', $_GET['UUID'])) { // check if UUID is valid
+    if (!preg_match('/^\{?[A-Za-z0-9]{8}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{12}\}?$/', $UUID)) { // check if UUID is valid
         result("UUID is invalid!", "init", 1);
     }
     if (empty($action)) { // get action
@@ -93,10 +97,10 @@
         if (!preg_match("/^\{?[A-Za-z0-9]{8}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{12}\}?$/", $_GET["receiver"])) {
             result("reciever ID is invalid", "download", 1);
         }
-        $receiverPub = './users/'.md5($_GET["receiver"]).'/pub.pub';
+        $receiverPub = './users/'.hash("sha256", md5($_GET["receiver"])).'/pub.pub';
         if (checkFile($receiverPub)) {
-            $pub = file_get_contents($receiverPub, true);
-            die(json_encode(['pub' => $pub, 'called' => 'download', 'error' => 0]));
+            $pub = base64_encode(file_get_contents($receiverPub, true));
+            die(json_encode(['pub' => "$pub", 'called' => 'download', 'error' => 0]));
         }else {
             result("public key does not exist for provided UUID", "download", 1);
         }
@@ -108,22 +112,27 @@
         if (empty($_POST['pub'])) {
             result("public key is missing from POST!", "upload", 1);
         }
-        if (strlen($_POST['pub']) !== 274) {
+        $unencoded_pub = base64_decode($_POST['pub']);
+        if (strlen($unencoded_pub) !== 632) {
             result("submitted pub is invalid in length", "upload", 1);
         }
-        if (strpos($_POST['pub'],'<?php') !== false) {
+        if (strpos($unencoded_pub,'<?php') !== false) {
             result("submitted pub is invalid!", "upload", 1);
         }
-        if (strpos($_POST['pub'],'-----BEGIN PUBLIC KEY-----') === false) {
+        if (strpos($unencoded_pub,'-----BEGIN PUBLIC KEY-----') === false) {
             result("submitted pub is missing the RSA header", "upload", 1);
         }
-        if (strpos($_POST['pub'],'-----END PUBLIC KEY-----') === false) {
+        if (strpos($unencoded_pub,'-----END PUBLIC KEY-----') === false) {
             result("submitted pub is missing the RSA footer", "upload", 1);
+        }
+        if (!checkFile($globalUserDir.'/queue')) {
+            $newDir = $globalUserDir.'/queue';
+            mkdir($newDir, 0777, true);
         }
         $newDir = 'users/'.$hashedID;
         mkdir($newDir, 0777, true);
         $pubFile = fopen($globalFileName, "w") or result("couldn't create public key file on server", "upload", 1);;
-        fwrite($pubFile, $_POST['pub']);
+        fwrite($pubFile, $unencoded_pub);
         fclose($pubFile);
         result("public key written successfully!", "upload", 0);
     }elseif ($action == "send") {
@@ -155,7 +164,7 @@
             result("keys do not match up!", "send", 1);
         }
         // check if requested UUID (user) exists and setup recieving location
-        $receiverURL = './users/'.md5($_GET["receiver"]);
+        $receiverURL = './users/'.hash("sha256", md5($_GET["receiver"]));
         if (!checkFile($receiverURL)) {
             result("public key does not exist for provided receiving UUID", "send", 1);
         } else {
@@ -174,7 +183,17 @@
         $quedMessage = fopen($receiverURL.'/queue/'.$timestamp, "w") or result("couldn't create queue file!", "send", 1);
         fwrite($quedMessage, $aes_msg);
         fclose($quedMessage);
-        result("message successfully written to users queue", "send", 0);
+
+        $apns_config_location = './users/'.hash("sha256", md5($_GET["receiver"])).'/conf';
+        if (checkFile($apns_config_location)) {
+            $device_token = file_get_contents($apns_config_location, true);
+            $device_token = $aes->decrypt($device_token);
+            if (!send_push_to($device_token)) {
+                result("message successfully written to users queue with notification", "send", 0);
+            }
+        }
+        result("message successfully written to users queue without notification", "send", 0);
+
     }elseif ($action == "list") {
         $msgs = array_diff(scandir($globalUserDir.'/queue/', 1), array('..', '.', '.DS_Store'));
         if (count($msgs) > 0) {
@@ -278,11 +297,32 @@
         if (strcmp($given_key, $decrypted_key) != 0) {
             result("keys do not match up!", "obliterate", 1);
         }
-        $userDirectory = 'users/'.md5($_GET["UUID"]);
+        $userDirectory = 'users/'.hash("sha256", md5($_GET["UUID"]));
         if (!checkFile($userDirectory)) {
-            result("public key does not exist for provided receiving UUID $userDirectory", "obliterate", 1);
+            result("public key does not exist for provided receiving UUID", "obliterate", 1);
         } 
         deleteDir($userDirectory);
-        result("user was obliterated $userDirectory", "obliterate", 0);
+        result("user was obliterated", "obliterate", 0);
+    }elseif ($action == "submit_token") {
+        if (empty($_GET["UUID"])) {
+            result("UUID is missing", "submit_token", 1);
+        }
+        if (!preg_match("/^\{?[A-Za-z0-9]{8}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{12}\}?$/", $_GET["UUID"])) {
+            result("reciever ID is invalid", "submit_token", 1);
+        }
+        if (empty($_POST["token"])) {
+            result("device token is missing", "submit_token", 1);
+        }
+        $protected_token = $aes->encrypt($_POST["token"]);
+        if (empty($protected_token)) {
+            result("token failed to encrypt with AES", "submit_devicetoken", 1);
+        }
+        $apns_config_location = './users/'.hash("sha256",md5($_GET["UUID"])).'/conf';
+        $apns_config = fopen($apns_config_location, "w") or result("couldn't create apns config file!", "submit_token", 1);
+        fwrite($apns_config, $protected_token);
+        fclose($apns_config);
+        result("token was successfully submitted", "submit_devicetoken", 0);
+    }else {
+        result("$action is not a valid action!", "init", 1);
     }
 ?>
