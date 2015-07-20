@@ -1,7 +1,6 @@
 <?php
 	$config_array = parse_ini_file("/etc/bithash/config.ini");
 	$apns_passphrase = $config_array["apns_pass"];
-	$local_cert_location = $config_array["apns_cert"];
 	function send_push_to($device)
     {
         set_time_limit(0);
@@ -15,7 +14,7 @@
         $result = 'Start' . '\n';
      
         $ctx = stream_context_create();
-        stream_context_set_option($ctx, 'ssl', 'local_cert', $local_cert_location);
+        stream_context_set_option($ctx, 'ssl', 'local_cert', '/etc/bithash/orthros_apns_cert.pem');
         stream_context_set_option($ctx, 'ssl', 'passphrase', $passphrase);
 
         sleep(1);
