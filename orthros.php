@@ -15,8 +15,8 @@
     $UUID = $_GET['UUID'];
     $hashedID = hash("sha256", md5($UUID));
     $globalUserDir = './users/'.$hashedID;
-    $globalFileName = $globalUserDir.'/pub.pub';
-    $iv = substr($hashedID, 0, 17) + "9a2ae11d94" + substr($hashedID, 0, -5); // rnd me pls
+    $globalPubDir = $globalUserDir.'/pub.pub';
+    $iv = substr($hashedID, 0, 17) + "9a2ae11d94" + substr($hashedID, 0, -5);
     $aes = new AES($config_array["aes_key"]);
     
     // commonly used functions
@@ -33,9 +33,15 @@
         clearstatcache();
     }
 
-    function deleteDir($target) {
-        if (is_dir($target)) {
+    function delete_files($target) {
+        if(is_dir($target)) {
+            $files = glob( $target . '*', GLOB_MARK ); //GLOB_MARK adds a slash to directories returned
+            foreach($files as $file) {
+                delete_files($file);      
+            }
             rmdir($target);
+        } elseif(is_file($target)) {
+            unlink($target);  
         }
     }
 
@@ -63,6 +69,11 @@
         return $token;
     }
 
+    if ($action == "version") {
+        $orthros_edit_time = filemtime("./orthros.php");
+        result("v1.0.0 $orthros_edit_time", "version", 0);
+    }
+
     // initial sanity checks
     if (empty($UUID)) { // check if UUID field is set
         result("UUID is missing!", "init", 1);
@@ -85,7 +96,7 @@
 
     // start action checks
     if ($action == "check") {
-        if (checkFile($globalFileName)) {
+        if (checkFile($globalPubDir)) {
             result("public key exists", "check", 0);
         } else {
             result("public key does not exist", "check", 1);
@@ -131,12 +142,19 @@
         }
         $newDir = 'users/'.$hashedID;
         mkdir($newDir, 0777, true);
-        $pubFile = fopen($globalFileName, "w") or result("couldn't create public key file on server", "upload", 1);;
+        $pubFile = fopen($globalPubDir, "w") or result("couldn't create public key file on server", "upload", 1);;
         fwrite($pubFile, $unencoded_pub);
         fclose($pubFile);
         result("public key written successfully!", "upload", 0);
     }elseif ($action == "send") {
         // check if UUID was passed
+        $orthros_edit_time = filemtime($globalPubDir);
+        $totalSeconds = abs($orthros_edit_time-microtime());
+        $date = getdate($totalSeconds); 
+        $hours = $date['hour'];
+        if ($hours > 24) {
+            result("Public key is expired! cannot continue request", "send", 1);
+        }
         if (empty($_GET["UUID"])) {
             result("UUID is missing", "send", 1);
         }
@@ -156,11 +174,10 @@
             result("temp_key does not exist!", "send", 1);
         }
         $decrypted_key;
-        $given_key = $_POST['key'];
         if (!openssl_private_decrypt(base64_decode(file_get_contents($globalUserDir."/temp_key", true)), $decrypted_key, file_get_contents($config_array["server_private_key"], true))) {
             result("error while decrypting key for server", "send", 1);
         }
-        if (strcmp($given_key, $decrypted_key) != 0) {
+        if (strcmp($_POST['key'], $decrypted_key) != 0) {
             result("keys do not match up!", "send", 1);
         }
         // check if requested UUID (user) exists and setup recieving location
@@ -231,13 +248,12 @@
             result("temp_key does not exist on server!", "delete_msg", 1);
         }
         $decrypted_key;
-        $given_key = $_POST['key'];
         if (!openssl_private_decrypt(base64_decode(file_get_contents($globalUserDir."/temp_key", true)), $decrypted_key, file_get_contents($config_array["server_private_key"], true))) {
             result("error while decrypting key!", "delete_msg", 1);
         } else {
             if (strcmp($_POST["key"], $decrypted_key) != 0) {
                 result("one-time keys do not match up!", "delete_msg", 1);
-        }
+            }
             $messageURL = $globalUserDir.'/queue/'.$_GET["msg_id"];
             if (unlink($messageURL)) {
                 die(json_encode(['msg' => $_GET["msg_id"], 'called' => 'delete_msg', 'error' => 0]));
@@ -246,7 +262,7 @@
             }
         }
     }elseif ($action == "gen_key") {
-        $receiverPub = $globalFileName;
+        $receiverPub = $globalPubDir;
         if (checkFile($receiverPub)) {
             $pub = file_get_contents($receiverPub, true);
             $srvr_pub = file_get_contents($config_array["server_public_key"], true);
@@ -290,18 +306,17 @@
             result("temp_key does not exist!", "obliterate", 1);
         }
         $decrypted_key;
-        $given_key = $_POST['key'];
         if (!openssl_private_decrypt(base64_decode(file_get_contents($globalUserDir."/temp_key", true)), $decrypted_key, file_get_contents($config_array["server_private_key"], true))) {
             result("error while decrypting key for server", "obliterate", 1);
         }
-        if (strcmp($given_key, $decrypted_key) != 0) {
+        if (strcmp($_POST['key'], $decrypted_key) != 0) {
             result("keys do not match up!", "obliterate", 1);
         }
         $userDirectory = 'users/'.hash("sha256", md5($_GET["UUID"]));
         if (!checkFile($userDirectory)) {
             result("public key does not exist for provided receiving UUID", "obliterate", 1);
         } 
-        deleteDir($userDirectory);
+        delete_files($userDirectory);
         result("user was obliterated", "obliterate", 0);
     }elseif ($action == "submit_token") {
         if (empty($_GET["UUID"])) {
@@ -322,7 +337,61 @@
         fwrite($apns_config, $protected_token);
         fclose($apns_config);
         result("token was successfully submitted", "submit_devicetoken", 0);
-    }else {
+    }elseif ($action == "keypair_epoch") {
+        $orthros_edit_time = filemtime($globalPubDir);
+        result("$orthros_edit_time", "keypair_epoch", 0);
+    } elseif ($action == "keypair_replace") {
+        // check if UUID was passed
+        if (empty($_GET["UUID"])) {
+            result("UUID is missing", "keypair_replace", 1);
+        }
+        if (!preg_match("/^\{?[A-Za-z0-9]{8}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{4}-[A-Za-z0-9]{12}\}?$/", $_GET["UUID"])) {
+            result("reciever ID is invalid", "keypair_replace", 1);
+        }
+        if (empty($_POST["key"])) {
+            result("one-time key is missing from POST", "keypair_replace", 1);
+        }
+        if (!checkFile($globalUserDir."/temp_key")) {
+            result("temp_key does not exist!", "keypair_replace", 1);
+        }
+        $decrypted_key;
+        if (!openssl_private_decrypt(base64_decode(file_get_contents($globalUserDir."/temp_key", true)), $decrypted_key, file_get_contents($config_array["server_private_key"], true))) {
+            result("error while decrypting key for server", "keypair_replace", 1);
+        }
+        if (strcmp($_POST['key'], $decrypted_key) != 0) {
+            result("keys do not match up!", "keypair_replace", 1);
+        }
+        if (!unlink($globalPubDir)) {
+            result("public key does not exist or was already deleted!", "keypair_replace", 1);
+        }
+        delete_files($globalUserDir.'/queue');
+        if (empty($_POST['pub'])) {
+            result("public key is missing from POST!", "keypair_replace", 1);
+        }
+        $unencoded_pub = base64_decode($_POST['pub']);
+        if (strlen($unencoded_pub) !== 632) {
+            result("submitted pub is invalid in length", "keypair_replace", 1);
+        }
+        if (strpos($unencoded_pub,'<?php') !== false) {
+            result("submitted pub is invalid!", "keypair_replace", 1);
+        }
+        if (strpos($unencoded_pub,'-----BEGIN PUBLIC KEY-----') === false) {
+            result("submitted pub is missing the RSA header", "keypair_replace", 1);
+        }
+        if (strpos($unencoded_pub,'-----END PUBLIC KEY-----') === false) {
+            result("submitted pub is missing the RSA footer", "keypair_replace", 1);
+        }
+        if (!checkFile($globalUserDir.'/queue')) {
+            $newDir = $globalUserDir.'/queue';
+            mkdir($newDir, 0777, true);
+        }
+        $newDir = 'users/'.$hashedID;
+        mkdir($newDir, 0777, true);
+        $pubFile = fopen($globalPubDir, "w") or result("couldn't create public key file on server", "keypair_replace", 1);;
+        fwrite($pubFile, $unencoded_pub);
+        fclose($pubFile);
+        result("new public key written successfully!", "keypair_replace", 0);
+    } else {
         result("$action is not a valid action!", "init", 1);
     }
 ?>
